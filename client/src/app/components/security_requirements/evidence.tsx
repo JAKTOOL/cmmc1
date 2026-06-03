@@ -1,7 +1,7 @@
 import { SearchDropdown } from "@/app/components/search_dropdown";
 import {
     toBuffer,
-    toDataURL,
+    viewFile,
 } from "@/app/components/security_requirements/utils";
 import { useNotification } from "@/app/context/notification";
 import { IDB, IDBEvidenceV2 } from "@/app/db";
@@ -271,24 +271,11 @@ const Badge = ({
 };
 
 export const FileBadge = ({ artifact }: { artifact: IDBEvidenceV2 }) => {
-    const viewFile = async () => {
-        const file = new File([artifact.data], artifact.filename, {
-            type: artifact.type,
-        });
-        const url = await toDataURL(file);
-
-        Object.assign(document.createElement("a"), {
-            target: "_blank",
-            rel: "noopener noreferrer",
-            href: url,
-        }).click();
-    };
-
     return (
         <button
             className="border-r border-blue-200 pr-2 flex"
             title={`${artifact.data.byteLength} bytes | ${artifact.type}`}
-            onClick={viewFile}
+            onClick={() => viewFile(artifact)}
         >
             <IconFileDownload />
             <span>{artifact.filename}</span>

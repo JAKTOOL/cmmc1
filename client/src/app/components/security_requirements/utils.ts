@@ -1,3 +1,5 @@
+import { IDBEvidenceV2 } from "@/app/db";
+
 export function debounce(func, delay) {
     let timeoutId: NodeJS.Timeout | undefined;
     return function (...args) {
@@ -25,3 +27,19 @@ export const toDataURL = (file: File | Blob) =>
         fr.onerror = (err) => reject(err);
         fr.readAsDataURL(file);
     });
+
+export const viewFile = (artifact: IDBEvidenceV2) => {
+    const file = new File([artifact.data], artifact.filename, {
+        type: artifact.type,
+    });
+
+    const url = URL.createObjectURL(file);
+
+    Object.assign(document.createElement("a"), {
+        target: "_blank",
+        rel: "noopener noreferrer",
+        href: url,
+    }).click();
+
+    setTimeout(() => URL.revokeObjectURL(url), 30_000);
+};
